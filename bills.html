@@ -1,0 +1,247 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SANDEEP MILK BILLS</title>
+
+<style>
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f3f6ff;
+    margin:0;
+    padding:0;
+}
+
+.container{
+    max-width:1000px;
+    margin:25px auto;
+    background:#ffffff;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 10px 25px rgba(11, 11, 11, 0.08);
+}
+
+.header{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.header h1{
+    margin:0;
+    color:#1d0c8d;
+}
+
+.top-box{
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.box{
+    flex:1;
+}
+
+label{
+    font-size:14px;
+    color:#000001;
+}
+
+input{
+    width:100%;
+    padding:8px;
+    border-radius:6px;
+    border:1px solid #ccc;
+    margin-top:3px;
+}
+
+.table-area{
+    margin-top:20px;
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    border:1px solid #ddd;
+    text-align:center;
+    padding:8px;
+}
+
+th{
+    background:#2a3f8e;
+    color:white;
+}
+
+.summary{
+    margin-top:20px;
+    display:grid;
+    grid-template-columns: repeat(2,1fr);
+    gap:15px;
+}
+
+.card{
+    border:1px solid #d6daf6;
+    border-radius:10px;
+    padding:15px;
+    background:#f7f8ff;
+}
+
+.card h3{
+    margin:0 0 10px 0;
+    color:#2624ad;
+}
+
+.amount{
+    font-size:20px;
+    font-weight:bold;
+}
+
+button{
+    margin-top:15px;
+    padding:10px 18px;
+    border:none;
+    border-radius:8px;
+    background:#2a3f8e;
+    color:white;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+.tagline{
+  color:#125fad;   /* change this to any color code you want */
+  font-weight:999; /* optional */
+}
+
+
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1 id="companyNameHeader">ENTER MONTH YEAR  </h1>
+      <p class="tagline">SANDEEP COW & BUFFALO MILK SUPPLY</p>
+ 
+        
+    </div>
+
+    <div class="top-box">
+        <div class="box">
+            <label>MONTH  YEAR </label>
+            <input type="text" id="company" placeholder="MONTH YEAR " oninput="updateCompany()">
+        </div>
+
+        <div class="box">
+            <label>Customer Name</label>
+            <input type="text" id="customer" placeholder="Customer Name">
+        </div>
+
+        <div class="box">
+            <label>Customer Address</label>
+            <input type="text" id="address" placeholder="Enter Address">
+        </div>
+
+        <div class="box">
+            <label>Rate Per Liter (₹)</label>
+            <input type="number" id="rate" value="50" oninput="calculateTotals()">
+        </div>
+    </div>
+
+    <div class="table-area">
+        <table id="milkTable">
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>Total Milk (L)</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SUMMARY SECTION -->
+    <div class="summary">
+        <div class="card">
+            <h3>Total Milk (Liters)</h3>
+            <div class="amount" id="totalLiters">0.00</div>
+        </div>
+
+        <div class="card">
+            <h3>Milk Amount (₹)</h3>
+            <div class="amount" id="milkAmount">0.00</div>
+        </div>
+
+        <div class="card">
+            <h3>Due Amount (₹)</h3>
+            <input type="number" id="due" value="0" oninput="calculateTotals()">
+        </div>
+
+        <div class="card">
+            <h3>Final Amount (₹)</h3>
+            <div class="amount" id="finalAmount">0.00</div>
+        </div>
+    </div>
+
+    <button onclick="window.print()">Print / Save PDF</button>
+
+</div>
+
+<script>
+const daysInMonth = 31;
+const tbody = document.querySelector("#milkTable tbody");
+
+for(let i=1;i<=daysInMonth;i++){
+    let row = document.createElement("tr");
+
+    row.innerHTML = `
+        <td>${i}</td>
+        <td><input type="number" value="0" oninput="calculateTotals()"></td>
+    `;
+
+    tbody.appendChild(row);
+}
+
+function calculateTotals(){
+
+    let rate = parseFloat(document.getElementById("rate").value) || 0;
+    let due  = parseFloat(document.getElementById("due").value) || 0;
+
+    let totalLiters = 0;
+
+    document.querySelectorAll("#milkTable tbody tr").forEach(row=>{
+        let morning = parseFloat(row.children[1].children[0].value) || 0;
+        totalLiters += morning;
+    });
+
+    let milkAmount = totalLiters * rate;
+    let finalAmount = milkAmount + due;
+
+    document.getElementById("totalLiters").textContent = totalLiters.toFixed(2);
+    document.getElementById("milkAmount").textContent = milkAmount.toFixed(2);
+    document.getElementById("finalAmount").textContent = finalAmount.toFixed(2);
+}
+
+function updateCompany(){
+    document.getElementById("companyNameHeader").textContent =
+        document.getElementById("company").value || "Milk Company";
+}
+
+calculateTotals();
+</script>
+
+</body>
+</html>
